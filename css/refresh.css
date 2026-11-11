@@ -1,0 +1,1279 @@
+/* =========================================================
+   2026 视觉刷新
+   基于预览稿：更安静的首屏、场景进度卡、单面板清单、节奏时间轴。
+   只覆盖视觉，不改动清单逻辑。
+   ========================================================= */
+
+:root {
+  --refresh-radius: 28px;
+  --refresh-glass:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015) 46%, transparent 72%),
+    rgba(22, 27, 34, 0.54);
+}
+
+::selection {
+  background: rgba(255, 123, 114, 0.26);
+}
+
+body {
+  background-color: #0d1117;
+  background-image:
+    radial-gradient(58rem 42rem at 10% 2%, rgba(63, 185, 80, 0.10), transparent 64%),
+    radial-gradient(46rem 34rem at 92% 8%, rgba(255, 123, 114, 0.10), transparent 66%),
+    radial-gradient(42rem 30rem at 54% 100%, rgba(88, 166, 255, 0.06), transparent 70%);
+  background-attachment: fixed;
+}
+
+.shell {
+  width: min(1180px, calc(100% - 72px));
+}
+
+/* ---------- 顶栏 ---------- */
+
+.site-header {
+  border-bottom-color: rgba(240, 246, 252, 0.08);
+  background: rgba(13, 17, 23, 0.62);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  backdrop-filter: blur(26px) saturate(170%);
+}
+
+.header-inner {
+  min-height: 76px;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  transform: none;
+}
+
+.brand-text {
+  font-size: 20px;
+}
+
+.site-nav {
+  gap: 30px;
+}
+
+.site-nav a {
+  padding: 10px 0;
+  border-radius: 0;
+  color: rgba(230, 237, 243, 0.58);
+  font-size: 13px;
+}
+
+.site-nav a:hover {
+  color: var(--ink);
+  background: none;
+}
+
+.site-nav a.is-active {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.site-nav a.is-active::after {
+  left: 0;
+  bottom: 3px;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: none;
+}
+
+.nav-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(139, 148, 158, 0.72);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.nav-live i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.09);
+}
+
+/* ---------- 首屏 ---------- */
+
+.hero {
+  grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.88fr);
+  gap: clamp(32px, 5vw, 74px);
+  align-items: center;
+  padding-block: 54px 62px;
+}
+
+.hero-copy {
+  max-width: 620px;
+}
+
+.hero h1 {
+  margin-bottom: 22px;
+  font-size: clamp(46px, 5.5vw, 78px);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.hero h1 em {
+  position: relative;
+  color: var(--accent);
+  background: none;
+  white-space: nowrap;
+}
+
+.hero h1 em::after {
+  content: "";
+  position: absolute;
+  right: 0.15em;
+  bottom: 5px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), rgba(255, 123, 114, 0.12));
+}
+
+.lede {
+  max-width: 34em;
+  margin-bottom: 26px;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.hero-actions {
+  gap: 14px;
+}
+
+.hero-actions .btn {
+  min-height: 46px;
+  padding-inline: 20px;
+  font-size: 13px;
+}
+
+.hero-actions .btn-primary {
+  color: #fff;
+  background: #238636;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 12px 28px -16px rgba(35, 134, 54, 0.9);
+}
+
+.hero-actions .btn-primary:hover {
+  background: #2ea043;
+}
+
+.hero-actions .btn-ghost {
+  color: rgba(230, 237, 243, 0.72);
+  background: rgba(22, 27, 34, 0.52);
+  border-color: rgba(240, 246, 252, 0.14);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.hero-stat {
+  color: rgba(139, 148, 158, 0.72);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.hero-stat b {
+  color: rgba(230, 237, 243, 0.82);
+  font-weight: 500;
+}
+
+/* ---------- 场景进度卡 ---------- */
+
+.progress-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: end;
+  width: 100%;
+  max-width: 424px;
+  min-height: 446px;
+  margin: 0;
+  padding: 24px 24px 42px;
+  overflow: visible;
+  border: 1px solid rgba(121, 192, 255, 0.20);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(8, 12, 18, 0.72) 0 25%, rgba(8, 12, 18, 0.32) 58%, rgba(8, 12, 18, 0.48) 100%),
+    linear-gradient(180deg, rgba(8, 12, 18, 0.28), rgba(8, 12, 18, 0.72)),
+    url("../assets/progress-bg.jpg") 58% 36% / cover no-repeat,
+    #161b22;
+  box-shadow:
+    0 30px 72px -34px rgba(0, 0, 0, 0.95),
+    0 0 46px -24px rgba(88, 166, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+  text-align: left;
+  transform: none;
+}
+
+.progress-card:hover {
+  transform: none;
+}
+
+.progress-card::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 34%, transparent 68%, rgba(121, 192, 255, 0.05));
+  pointer-events: none;
+}
+
+.progress-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.progress-card .tape {
+  display: none;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.progress-card .eyebrow {
+  justify-content: flex-start;
+  margin: 0;
+  color: rgba(230, 237, 243, 0.56);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+}
+
+.card-date {
+  padding: 4px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: rgba(230, 237, 243, 0.62);
+  background: rgba(8, 12, 18, 0.32);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.progress-ring {
+  width: 190px;
+  margin: 28px auto 18px;
+  background: conic-gradient(var(--accent) calc(var(--p) * 1%), rgba(240, 246, 252, 0.12) 0);
+}
+
+.progress-ring::before {
+  inset: 11px;
+  background: rgba(8, 12, 18, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(240, 246, 252, 0.10);
+}
+
+.progress-ring-inner strong {
+  font-size: 62px;
+}
+
+.progress-ring-inner span {
+  margin-top: 9px;
+  color: rgba(230, 237, 243, 0.52);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.progress-text {
+  margin-bottom: 8px;
+  color: rgba(230, 237, 243, 0.86);
+  font-size: 13px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+}
+
+.progress-meta {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 14px;
+  gap: 14px;
+  border-top: 1px dashed rgba(240, 246, 252, 0.16);
+  color: rgba(230, 237, 243, 0.48);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 10px;
+  justify-content: flex-start;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.progress-meta span:last-child {
+  margin-left: auto;
+}
+
+.progress-meta b {
+  color: rgba(230, 237, 243, 0.9);
+}
+
+.scene-note {
+  position: absolute;
+  bottom: 13px;
+  left: 24px;
+  color: rgba(230, 237, 243, 0.38);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.11em;
+}
+
+/* ---------- 清单区 ---------- */
+
+.content-grid {
+  grid-template-columns: minmax(0, 1fr) 294px;
+  gap: 24px;
+  padding-bottom: 36px;
+}
+
+.section-heading {
+  align-items: flex-end;
+  margin-bottom: 14px;
+}
+
+.section-heading h2 {
+  font-size: clamp(28px, 3vw, 32px);
+  line-height: 1.2;
+}
+
+.section-tools {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.section-tools .tabs {
+  flex: none;
+  margin: 0;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(22, 27, 34, 0.46);
+  border-color: rgba(240, 246, 252, 0.09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.section-tools .tab {
+  flex: none;
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  font-size: 11px;
+  gap: 6px;
+}
+
+.section-tools .tab[aria-selected="true"] {
+  background: linear-gradient(180deg, #353c46, #262d36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    0 9px 18px -13px rgba(0, 0, 0, 0.95);
+}
+
+.section-tools .tab-count {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  font-size: 9px;
+}
+
+.section-tools .btn-small {
+  min-height: 36px;
+  padding-inline: 14px;
+  border-radius: 999px;
+  font-size: 11px;
+}
+
+.list-summary {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.task-list {
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(240, 246, 252, 0.09);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012) 42%, transparent 70%),
+    rgba(22, 27, 34, 0.40);
+  box-shadow:
+    0 20px 46px -32px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.task-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 105px 20px;
+  gap: 12px;
+  align-items: center;
+  min-height: 68px;
+  padding: 10px 16px 10px 18px;
+  border: 0;
+  border-bottom: 1px solid rgba(240, 246, 252, 0.07);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  transition: background-color 0.2s ease;
+}
+
+.task-item:last-child {
+  border-bottom: 0;
+}
+
+.task-item:hover {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: rgba(240, 246, 252, 0.07);
+  box-shadow: none;
+  transform: none;
+}
+
+.task-item.is-done {
+  background: rgba(18, 23, 30, 0.20);
+}
+
+.task-check {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border-width: 1px;
+  border-color: rgba(240, 246, 252, 0.28);
+  background: transparent;
+}
+
+.checkmark svg {
+  width: 10px;
+  height: 10px;
+}
+
+.task-check input:checked + .checkmark {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.task-check input:focus-visible + .checkmark {
+  outline: 2px solid rgba(121, 192, 255, 0.55);
+  outline-offset: 3px;
+}
+
+.task-content {
+  position: relative;
+  min-width: 0;
+}
+
+.task-heading {
+  flex-wrap: nowrap;
+  gap: 7px;
+  margin-bottom: 0;
+}
+
+.task-heading h3 {
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-heading h3 a {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-heading .priority {
+  flex: none;
+  padding: 2px 6px;
+  font-size: 8.5px;
+}
+
+.task-sub {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.task-sub .tag {
+  flex: none;
+  padding: 2px 6px;
+  font-size: 8.5px;
+}
+
+.task-summary {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10.5px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-box-orient: initial;
+  -webkit-line-clamp: unset;
+}
+
+.task-actions {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 2px 0 2px 8px;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(13, 17, 23, 0.92);
+  transition: opacity 0.2s ease;
+}
+
+.task-item:hover .task-actions,
+.task-item:focus-within .task-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.task-action {
+  padding: 1px 0;
+  border: 0;
+  color: rgba(139, 148, 158, 0.78);
+  background: none;
+  font: inherit;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.task-action:hover {
+  color: var(--ink);
+}
+
+.task-action-danger:hover {
+  color: var(--accent-deep);
+}
+
+.task-time {
+  min-width: 0;
+  text-align: right;
+  color: rgba(139, 148, 158, 0.78);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.task-time b {
+  display: block;
+  overflow: hidden;
+  color: rgba(230, 237, 243, 0.74);
+  font-size: 10px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+}
+
+.task-time span {
+  display: block;
+  margin-top: 2px;
+  color: rgba(139, 148, 158, 0.66);
+  font-size: 8.5px;
+}
+
+.task-time.is-soon b {
+  color: var(--accent);
+}
+
+.task-open {
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(240, 246, 252, 0.14);
+  color: rgba(230, 237, 243, 0.54);
+  font-size: 10px;
+}
+
+.task-open:hover {
+  color: var(--ink);
+  border-color: rgba(240, 246, 252, 0.3);
+}
+
+.empty-state {
+  border-radius: 22px;
+}
+
+/* ---------- 节奏侧栏 ---------- */
+
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rhythm-panel {
+  padding: 20px 20px 14px;
+  border-radius: 22px;
+}
+
+.panel-head {
+  margin-bottom: 14px;
+}
+
+#rhythm-title {
+  margin-bottom: 17px;
+  font-size: 23px;
+}
+
+.next-list {
+  display: grid;
+}
+
+.next {
+  position: relative;
+  display: grid;
+  grid-template-columns: 9px 38px minmax(0, 1fr);
+  gap: 9px;
+  padding: 8px 0;
+}
+
+.next::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: -9px;
+  left: 3px;
+  width: 1px;
+  background: rgba(240, 246, 252, 0.10);
+}
+
+.next:last-child::before {
+  display: none;
+}
+
+.next-pin {
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border: 1px solid rgba(240, 246, 252, 0.22);
+  border-radius: 50%;
+  background: #0d1117;
+}
+
+.next:first-child .next-pin {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 123, 114, 0.10);
+}
+
+.next time {
+  padding-top: 2px;
+  color: rgba(139, 148, 158, 0.72);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 8.5px;
+  line-height: 1.4;
+}
+
+.next time.is-hot {
+  color: var(--accent);
+}
+
+.next b {
+  display: block;
+  overflow: hidden;
+  color: rgba(230, 237, 243, 0.88);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.next small {
+  display: block;
+  overflow: hidden;
+  margin-top: 2px;
+  color: rgba(139, 148, 158, 0.62);
+  font-size: 8.5px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.next-empty {
+  padding: 8px 0 14px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.panel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 11px;
+  border-top: 1px dashed rgba(240, 246, 252, 0.10);
+  color: rgba(139, 148, 158, 0.72);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+}
+
+.panel-foot b {
+  color: rgba(230, 237, 243, 0.82);
+  font-weight: 500;
+}
+
+.mini-bar {
+  height: 2px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(240, 246, 252, 0.08);
+}
+
+.mini-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.5s ease;
+}
+
+.quote-card {
+  padding: 18px 20px 15px;
+  border-radius: 20px;
+}
+
+.quote-card .quote-mark {
+  margin-bottom: 4px;
+  font-size: 34px;
+}
+
+.quote-card blockquote {
+  margin-bottom: 9px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.quote-card figcaption {
+  font-size: 9px;
+}
+
+/* ---------- 页脚 ---------- */
+
+.site-footer {
+  margin-top: 20px;
+  padding-block: 0;
+  background: #010409;
+}
+
+.footer-top {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: 18px 0;
+}
+
+.footer-brand .brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.footer-brand .brand-text {
+  font-size: 16px;
+}
+
+.footer-line {
+  color: rgba(230, 237, 243, 0.48);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 9px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.footer-nav {
+  gap: 18px;
+}
+
+.footer-nav a {
+  font-size: 9px;
+}
+
+.footer-bottom {
+  padding: 10px 0;
+  color: rgba(230, 237, 243, 0.34);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 8px;
+}
+
+/* ---------- 详情页对齐 ---------- */
+
+.detail-main {
+  max-width: 1040px;
+  padding-block: 34px 54px;
+}
+
+.detail-card {
+  border-radius: 28px;
+}
+
+.detail-hero {
+  padding: clamp(28px, 4.5vw, 48px);
+}
+
+.detail-hero h1 {
+  font-size: clamp(36px, 4.6vw, 56px);
+  line-height: 1.16;
+}
+
+.detail-lede {
+  font-size: 13px;
+}
+
+.detail-pager {
+  margin-top: 16px;
+}
+
+/* ---------- 响应式 ---------- */
+
+@media (max-width: 1100px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(350px, 0.95fr);
+    gap: 36px;
+  }
+
+  .progress-card {
+    max-width: 400px;
+  }
+
+  .content-grid {
+    grid-template-columns: minmax(0, 1fr) 276px;
+  }
+}
+
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 38px;
+    padding-block: 44px 52px;
+  }
+
+  .hero-copy {
+    max-width: 680px;
+  }
+
+  .progress-card {
+    justify-self: center;
+    max-width: 424px;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .side-column {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+    align-items: stretch;
+  }
+
+  .site-footer {
+    margin-top: 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: calc(100% - 40px);
+  }
+
+  .site-nav {
+    gap: 20px;
+  }
+
+  .nav-live {
+    display: none;
+  }
+
+  .section-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 13px;
+  }
+
+  .section-tools {
+    justify-content: space-between;
+  }
+
+  .section-tools .tabs {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .section-tools .tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+
+  .side-column {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-block: 14px;
+  }
+
+  .footer-line {
+    text-align: left;
+  }
+
+  .footer-nav {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 620px) {
+  .shell {
+    width: calc(100% - 32px);
+  }
+
+  .header-inner {
+    min-height: 64px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand-text {
+    font-size: 18px;
+  }
+
+  .brand-text small {
+    font-size: 7px;
+  }
+
+  .site-nav {
+    gap: 16px;
+  }
+
+  .site-nav a {
+    font-size: 12px;
+  }
+
+  .hero {
+    gap: 26px;
+    padding-block: 34px 40px;
+  }
+
+  .hero h1 {
+    margin-bottom: 17px;
+    font-size: clamp(36px, 10.6vw, 46px);
+    line-height: 1.08;
+  }
+
+  .hero h1 em::after {
+    bottom: 3px;
+  }
+
+  .lede {
+    margin-bottom: 22px;
+    font-size: 13px;
+    line-height: 1.85;
+  }
+
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .hero-actions .btn {
+    min-height: 42px;
+    padding-inline: 15px;
+    font-size: 12px;
+  }
+
+  .hero-stat {
+    flex-basis: 100%;
+    margin-top: 2px;
+    font-size: 8.5px;
+  }
+
+  .progress-card {
+    min-height: 420px;
+    padding: 20px 18px 36px;
+    border-radius: 26px;
+  }
+
+  .progress-card .eyebrow {
+    font-size: 8px;
+  }
+
+  .card-date {
+    padding: 3px 6px;
+    font-size: 8px;
+  }
+
+  .progress-ring {
+    width: 170px;
+    margin: 24px auto 16px;
+  }
+
+  .progress-ring-inner strong {
+    font-size: 54px;
+  }
+
+  .progress-text {
+    font-size: 12px;
+  }
+
+  .progress-meta {
+    gap: 10px;
+    font-size: 9px;
+  }
+
+  .scene-note {
+    bottom: 10px;
+    left: 18px;
+    font-size: 7px;
+  }
+
+  .content-grid {
+    gap: 18px;
+  }
+
+  .section-heading h2 {
+    font-size: 27px;
+  }
+
+  .section-tools {
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+
+  .section-tools .tabs {
+    order: 2;
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  .section-tools .btn-small {
+    order: 1;
+    margin-left: auto;
+  }
+
+  .section-tools .tab {
+    min-height: 32px;
+    padding-inline: 7px;
+    font-size: 10px;
+  }
+
+  .task-item {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 6px 9px;
+    align-items: start;
+    min-height: 64px;
+    padding: 12px 13px;
+  }
+
+  .task-check,
+  .checkmark {
+    width: 17px;
+    height: 17px;
+  }
+
+  .task-check {
+    margin-top: 2px;
+  }
+
+  .task-heading {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .task-heading h3 {
+    flex: 1 1 auto;
+    font-size: 12.5px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .task-heading .priority {
+    margin-top: 2px;
+  }
+
+  .task-heading h3 a {
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .task-sub {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+
+  .task-summary {
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .task-time {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .task-time b,
+  .task-time span {
+    display: inline;
+    margin: 0;
+  }
+
+  .task-open {
+    display: none;
+  }
+
+  .task-sub .task-summary {
+    font-size: 9.5px;
+  }
+
+  .task-time b {
+    font-size: 9.5px;
+  }
+
+  .task-time span {
+    font-size: 8px;
+  }
+
+  .task-actions {
+    position: static;
+    margin-top: 4px;
+    padding: 0;
+    opacity: 1;
+    pointer-events: auto;
+    background: none;
+  }
+
+  .task-action {
+    font-size: 9px;
+  }
+
+  .task-open {
+    width: 18px;
+    height: 18px;
+  }
+
+  #rhythm-title {
+    font-size: 21px;
+  }
+
+  .quote-card blockquote {
+    font-size: 12px;
+  }
+
+  .detail-main {
+    padding-block: 24px 40px;
+  }
+
+  .detail-hero {
+    padding: 24px 20px;
+  }
+
+  .detail-hero h1 {
+    font-size: clamp(28px, 8vw, 38px);
+  }
+
+  .footer-bottom {
+    justify-content: space-between;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 400px) {
+  .shell {
+    width: calc(100% - 28px);
+  }
+
+  .hero h1 {
+    font-size: 10.2vw;
+  }
+
+  .progress-ring {
+    width: 150px;
+  }
+
+  .progress-ring-inner strong {
+    font-size: 48px;
+  }
+
+  .task-item {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 6px 8px;
+    padding-inline: 11px;
+  }
+
+  .task-time b {
+    font-size: 9px;
+  }
+}
+
+@media (hover: none) {
+  .task-actions {
+    position: static;
+    margin-top: 4px;
+    padding: 0;
+    opacity: 1;
+    pointer-events: auto;
+    background: none;
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "title": "今日待办",
+    "updated": "2026-11-11"
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "title": "完成第四阶段任务书：静态页面上线",
+      "summary": "对照任务书逐项验收：两个页面、375px 布局、Tab 交互和 3 条抓包记录。",
+      "tag": "学习",
+      "priority": "high",
+      "dueInDays": 0,
+      "dueTime": "22:00",
+      "estimateMinutes": 120,
+      "steps": [
+        "确认列表页和详情页可以互相跳转",
+        "把窗口缩到 375px，检查没有横向滚动条",
+        "按 F12 记录 3 条请求，并截一张 404",
+        "把线上 URL 和抓包记录补进 README"
+      ],
+      "note": "先做完，再做好看。页面丑不丢人，打不开才丢人。"
+    },
+    {
+      "id": "t2",
+      "title": "把项目推到 GitHub Pages",
+      "summary": "新建仓库 web-phase4-姓名，推上 main 分支，在 Settings → Pages 里选择根目录发布。",
+      "tag": "项目",
+      "priority": "high",
+      "dueInDays": 1,
+      "dueTime": "20:00",
+      "estimateMinutes": 45,
+      "steps": [
+        "仓库名使用 web-phase4-姓名",
+        "推送后在 Settings → Pages 选择 Deploy from a branch",
+        "等待 Actions 变成绿色，打开 https 地址",
+        "手机流量下再打开一次确认"
+      ],
+      "note": "部署不是加分项，是这次任务的终点线。"
+    },
+    {
+      "id": "t3",
+      "title": "复习 DOM 与事件委托",
+      "summary": "读一遍 MDN 的 DOM 入门，再回来解释：为什么给列表父元素绑一个 change 就够了。",
+      "tag": "学习",
+      "priority": "medium",
+      "dueInDays": 2,
+      "dueTime": "21:30",
+      "estimateMinutes": 40,
+      "steps": [
+        "读 MDN「DOM 是什么」与 querySelector",
+        "在控制台打印 document.querySelectorAll('.task-item')",
+        "用自己的话写下事件冒泡和事件委托",
+        "把答案补进周记"
+      ],
+      "note": "能讲清楚，才算真的会。"
+    },
+    {
+      "id": "t4",
+      "title": "晚跑 3 公里，回来拉伸",
+      "summary": "不看配速，绕操场七圈半。回来做 5 分钟小腿拉伸，再洗澡。",
+      "tag": "生活",
+      "priority": "low",
+      "dueInDays": 0,
+      "dueTime": "20:30",
+      "estimateMinutes": 35,
+      "steps": [
+        "换鞋，带水",
+        "慢跑 3 公里",
+        "拉伸小腿和大腿后侧",
+        "在清单上打勾"
+      ],
+      "note": "身体也是项目的一部分，别让它一直排队。"
+    },
+    {
+      "id": "t5",
+      "title": "给窗台的绿萝浇水",
+      "summary": "摸一下土，干了再浇透。顺手把黄叶剪掉，转个方向晒晒太阳。",
+      "tag": "生活",
+      "priority": "low",
+      "dueInDays": 1,
+      "dueTime": "09:00",
+      "estimateMinutes": 5,
+      "steps": [
+        "手指插进土里确认干湿",
+        "浇水到盆底渗出",
+        "剪掉黄叶",
+        "把花盆转 90 度"
+      ],
+      "note": "五分钟的小事，也会让房间亮一点。"
+    },
+    {
+      "id": "t6",
+      "title": "整理本周抓包记录进周记",
+      "summary": "把页面主文档、CSS/JS、自己写的 fetch 三条请求的方法、状态码、耗时写清楚。",
+      "tag": "复盘",
+      "priority": "medium",
+      "dueInDays": 3,
+      "dueTime": "22:30",
+      "estimateMinutes": 30,
+      "steps": [
+        "打开 F12 → Network，勾选 Preserve log",
+        "刷新页面，找到 index.html、style.css、tasks.json",
+        "记录 Method / Status / Time",
+        "故意访问一个不存在的路径，截 404",
+        "把表格和截图放进 docs/抓包记录.md"
+      ],
+      "note": "截图不是证据，能解释请求发生了什么才是。"
+    }
+  ]
+}

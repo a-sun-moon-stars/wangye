@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="今日待办：一个用原生 HTML、CSS、JavaScript 写成的静态待办清单。把今天的事一件件放下来。">
+  <meta name="theme-color" content="#0D1117">
+  <title>今日待办 · 把今天过成喜欢的样子</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23DA3633'/%3E%3Cpath d='M18 33l9 9 19-21' fill='none' stroke='%23FFFFFF' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/refresh.css">
+  <script src="js/tasks-data.js" defer></script>
+  <script src="js/utils.js" defer></script>
+  <script src="js/store.js" defer></script>
+  <script src="js/editor.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="index.html" aria-label="今日待办首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 12.5 9.2 16.7 19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="brand-text">
+          今日待办
+          <small>ONE THING AT A TIME</small>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <a class="is-active" href="index.html" aria-current="page">清单</a>
+        <a href="#rhythm">节奏</a>
+        <span class="nav-live"><i aria-hidden="true"></i>本地 · <span data-today-short>11.11</span></span>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span><span data-today>今天</span></p>
+        <h1 id="hero-title">把今天，<br><em>过成喜欢的样子。</em></h1>
+        <p class="lede">列表不催你，只替你把脑子里的事放下来。做完就打勾，没做完就留给明天。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#tasks">开始今天 <span aria-hidden="true">↓</span></a>
+          <button class="btn btn-ghost" type="button" data-reset>重置进度</button>
+          <p class="hero-stat"><b data-total-count>6</b> 件 · 预计 <b data-total-time>4 小时 35 分</b></p>
+        </div>
+      </div>
+
+      <aside class="progress-card" aria-labelledby="progress-title">
+        <div class="card-top">
+          <p class="eyebrow">TODAY'S PROGRESS</p>
+          <span class="card-date" data-card-date>11 / 11</span>
+        </div>
+        <h2 class="sr-only" id="progress-title">今日完成进度</h2>
+        <div class="progress-ring" data-ring style="--p:0">
+          <div class="progress-ring-inner">
+            <strong data-percent>0%</strong>
+            <span>已完成</span>
+          </div>
+        </div>
+        <p class="progress-text" data-progress-text>从最小的一件开始。</p>
+        <div class="progress-meta">
+          <span><b data-done-count>0</b> 件完成</span>
+          <span>共 <b data-total-count>6</b> 件</span>
+          <span data-total-time>4 小时 35 分</span>
+        </div>
+        <span class="scene-note">SCENE · SHOREKEEPER / 03.6s</span>
+      </aside>
+    </section>
+
+    <div class="shell content-grid">
+      <section class="tasks-section" id="tasks" aria-labelledby="tasks-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TODAY'S LIST</p>
+            <h2 id="tasks-title">今天要做的事</h2>
+          </div>
+          <div class="section-tools">
+            <div class="tabs" role="tablist" aria-label="筛选任务">
+              <button class="tab is-active" id="tab-all" role="tab" aria-selected="true" aria-controls="panel-all" tabindex="0" data-filter="all">
+                全部 <span class="tab-count" data-count="all">6</span>
+              </button>
+              <button class="tab" id="tab-active" role="tab" aria-selected="false" aria-controls="panel-active" tabindex="-1" data-filter="active">
+                进行中 <span class="tab-count" data-count="active">5</span>
+              </button>
+              <button class="tab" id="tab-done" role="tab" aria-selected="false" aria-controls="panel-done" tabindex="-1" data-filter="done">
+                已完成 <span class="tab-count" data-count="done">1</span>
+              </button>
+            </div>
+            <button class="btn btn-primary btn-small" type="button" data-new-task>+ 新建任务</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-all" role="tabpanel" aria-labelledby="tab-all" tabindex="0" data-panel="all">
+          <p class="list-summary" data-summary="all">正在整理今天的清单…</p>
+          <ul class="task-list" data-list="all" aria-label="全部任务"></ul>
+          <div class="empty-state" data-empty="all" hidden>
+            <span class="empty-icon" aria-hidden="true">✓</span>
+            <h3>今天还没有任务</h3>
+            <p>等一下，清单正在加载。</p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-active" role="tabpanel" aria-labelledby="tab-active" tabindex="0" data-panel="active" hidden>
+          <p class="list-summary" data-summary="active">正在整理今天的清单…</p>
+          <ul class="task-list" data-list="active" aria-label="进行中的任务"></ul>
+          <div class="empty-state" data-empty="active" hidden>
+            <span class="empty-icon" aria-hidden="true">✓</span>
+            <h3>这一栏清空了</h3>
+            <p>待办都完成了，去喝口水，或者看看「已完成」。</p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-done" role="tabpanel" aria-labelledby="tab-done" tabindex="0" data-panel="done" hidden>
+          <p class="list-summary" data-summary="done">正在整理今天的清单…</p>
+          <ul class="task-list" data-list="done" aria-label="已完成的任务"></ul>
+          <div class="empty-state" data-empty="done" hidden>
+            <span class="empty-icon" aria-hidden="true">○</span>
+            <h3>还没有打勾的任务</h3>
+            <p>从最小的一件开始，完成第一件就会出现在这里。</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-column" aria-label="清单概览">
+        <section class="panel rhythm-panel" id="rhythm" aria-labelledby="rhythm-title">
+          <div class="panel-head">
+            <p class="eyebrow">RHYTHM</p>
+            <span class="badge">实时</span>
+          </div>
+          <h2 id="rhythm-title">今天的节奏</h2>
+          <div class="next-list" data-next-list></div>
+          <div class="panel-foot">
+            <span>完成 <b data-side-done>1 / 6</b></span>
+            <span data-percent>17%</span>
+          </div>
+          <div class="mini-bar" aria-hidden="true"><span data-rhythm-bar></span></div>
+        </section>
+
+        <figure class="quote-card">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <blockquote>不必把一天塞满，<br>只要把最重要的一件做完。</blockquote>
+          <figcaption>—— 给今天的自己</figcaption>
+        </figure>
+      </aside>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-top">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="今日待办首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 12.5 9.2 16.7 19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="brand-text">
+            今日待办
+            <small>ONE THING AT A TIME</small>
+          </span>
+        </a>
+      </div>
+      <p class="footer-line">一周的量，做一周的事。<br>剩下的，交给明天。</p>
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="#main">回到顶部</a>
+        <a href="#rhythm">节奏</a>
+        <a href="detail.html?id=t1">任务详情</a>
+      </nav>
+    </div>
+    <div class="shell footer-bottom">
+      <p>© <span data-year>2026</span> 今日待办</p>
+      <p>原生 HTML / CSS / JavaScript · 无框架、无构建</p>
+    </div>
+  </footer>
+
+  <dialog class="task-dialog" id="task-dialog" aria-labelledby="task-dialog-title">
+    <form class="task-form" id="task-form" novalidate>
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">TASK EDITOR</p>
+          <h2 id="task-dialog-title">编辑任务</h2>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="关闭编辑窗口">&times;</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field field-wide" for="task-title">标题
+          <input id="task-title" name="title" type="text" maxlength="60" required autocomplete="off" placeholder="例如：把首页的文案再顺一遍">
+        </label>
+
+        <label class="field field-wide" for="task-summary">一句话描述
+          <textarea id="task-summary" name="summary" rows="2" maxlength="120" required placeholder="做完这件事，具体是什么样子？"></textarea>
+        </label>
+
+        <label class="field" for="task-tag">标签
+          <select id="task-tag" name="tag">
+            <option value="学习">学习</option>
+            <option value="项目">项目</option>
+            <option value="生活">生活</option>
+            <option value="复盘">复盘</option>
+          </select>
+        </label>
+
+        <label class="field" for="task-priority">优先级
+          <select id="task-priority" name="priority">
+            <option value="high">重要</option>
+            <option value="medium">常规</option>
+            <option value="low">轻松</option>
+          </select>
+        </label>
+
+        <label class="field" for="task-date">截止日期
+          <input id="task-date" name="date" type="date" required>
+        </label>
+
+        <label class="field" for="task-time">截止时间
+          <input id="task-time" name="time" type="time" required>
+        </label>
+
+        <label class="field" for="task-estimate">预计用时（分钟）
+          <input id="task-estimate" name="estimate" type="number" min="5" max="600" step="5" value="30" required>
+        </label>
+
+        <label class="field field-wide" for="task-steps">完成步骤（一行一个）
+          <textarea id="task-steps" name="steps" rows="4" required placeholder="第一步行做什么&#10;第二步做什么&#10;最后怎么算完成"></textarea>
+        </label>
+
+        <label class="field field-wide" for="task-note">给自己的备注
+          <textarea id="task-note" name="note" rows="2" maxlength="200" placeholder="写一句提醒自己的话，可留空。"></textarea>
+        </label>
+      </div>
+
+      <p class="form-error" id="task-form-error" role="alert" hidden></p>
+
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-close-dialog>取消</button>
+        <button class="btn btn-primary" id="task-submit" type="submit">保存修改</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog" class="confirm-form">
+      <p class="eyebrow">DELETE TASK</p>
+      <h2 id="confirm-title">删除这件任务？</h2>
+      <p id="confirm-text">删除后不能撤销。</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="submit" value="cancel">取消</button>
+        <button class="btn btn-danger" type="submit" value="confirm">删除</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p class="noscript">这个清单需要 JavaScript 才能筛选和勾选，请启用后再试。</p>
+  </noscript>
+</body>
+</html>

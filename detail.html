@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="今日待办的任务详情：把一件小事拆成可以完成的具体步骤。">
+  <meta name="theme-color" content="#0D1117">
+  <title>任务详情 · 今日待办</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23DA3633'/%3E%3Cpath d='M18 33l9 9 19-21' fill='none' stroke='%23FFFFFF' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/refresh.css">
+  <script src="js/tasks-data.js" defer></script>
+  <script src="js/utils.js" defer></script>
+  <script src="js/store.js" defer></script>
+  <script src="js/editor.js" defer></script>
+  <script src="js/detail.js" defer></script>
+</head>
+<body class="page-detail">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="index.html" aria-label="今日待办首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 12.5 9.2 16.7 19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="brand-text">
+          今日待办
+          <small>ONE THING AT A TIME</small>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        <a href="index.html">清单</a>
+        <a href="index.html#rhythm">节奏</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="detail-main shell" id="main">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href="index.html">今日清单</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">任务详情</span>
+    </nav>
+
+    <article class="detail-card" data-detail aria-live="polite">
+      <div class="detail-loading">
+        <p class="eyebrow">LOADING</p>
+        <h1>正在把任务铺开…</h1>
+        <p>稍等一下，马上就好。</p>
+      </div>
+    </article>
+
+    <nav class="detail-pager" data-pager aria-label="任务翻页" hidden></nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-top">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" aria-label="今日待办首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 12.5 9.2 16.7 19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="brand-text">
+            今日待办
+            <small>ONE THING AT A TIME</small>
+          </span>
+        </a>
+      </div>
+      <p class="footer-line">一周的量，做一周的事。<br>剩下的，交给明天。</p>
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="index.html">回到清单</a>
+        <a href="index.html#rhythm">节奏</a>
+        <a href="index.html#tasks">今天的事</a>
+      </nav>
+    </div>
+    <div class="shell footer-bottom">
+      <p>© <span data-year>2026</span> 今日待办</p>
+      <p>原生 HTML / CSS / JavaScript · 无框架、无构建</p>
+    </div>
+  </footer>
+
+  <dialog class="task-dialog" id="task-dialog" aria-labelledby="task-dialog-title">
+    <form class="task-form" id="task-form" novalidate>
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">TASK EDITOR</p>
+          <h2 id="task-dialog-title">编辑任务</h2>
+        </div>
+        <button class="dialog-close" type="button" data-close-dialog aria-label="关闭编辑窗口">&times;</button>
+      </div>
+
+      <div class="form-grid">
+        <label class="field field-wide" for="task-title">标题
+          <input id="task-title" name="title" type="text" maxlength="60" required autocomplete="off" placeholder="例如：把首页的文案再顺一遍">
+        </label>
+
+        <label class="field field-wide" for="task-summary">一句话描述
+          <textarea id="task-summary" name="summary" rows="2" maxlength="120" required placeholder="做完这件事，具体是什么样子？"></textarea>
+        </label>
+
+        <label class="field" for="task-tag">标签
+          <select id="task-tag" name="tag">
+            <option value="学习">学习</option>
+            <option value="项目">项目</option>
+            <option value="生活">生活</option>
+            <option value="复盘">复盘</option>
+          </select>
+        </label>
+
+        <label class="field" for="task-priority">优先级
+          <select id="task-priority" name="priority">
+            <option value="high">重要</option>
+            <option value="medium">常规</option>
+            <option value="low">轻松</option>
+          </select>
+        </label>
+
+        <label class="field" for="task-date">截止日期
+          <input id="task-date" name="date" type="date" required>
+        </label>
+
+        <label class="field" for="task-time">截止时间
+          <input id="task-time" name="time" type="time" required>
+        </label>
+
+        <label class="field" for="task-estimate">预计用时（分钟）
+          <input id="task-estimate" name="estimate" type="number" min="5" max="600" step="5" value="30" required>
+        </label>
+
+        <label class="field field-wide" for="task-steps">完成步骤（一行一个）
+          <textarea id="task-steps" name="steps" rows="4" required placeholder="第一步行做什么&#10;第二步做什么&#10;最后怎么算完成"></textarea>
+        </label>
+
+        <label class="field field-wide" for="task-note">给自己的备注
+          <textarea id="task-note" name="note" rows="2" maxlength="200" placeholder="写一句提醒自己的话，可留空。"></textarea>
+        </label>
+      </div>
+
+      <p class="form-error" id="task-form-error" role="alert" hidden></p>
+
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-close-dialog>取消</button>
+        <button class="btn btn-primary" id="task-submit" type="submit">保存修改</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog" class="confirm-form">
+      <p class="eyebrow">DELETE TASK</p>
+      <h2 id="confirm-title">删除这件任务？</h2>
+      <p id="confirm-text">删除后不能撤销。</p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="submit" value="cancel">取消</button>
+        <button class="btn btn-danger" type="submit" value="confirm">删除</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p class="noscript">任务详情需要 JavaScript 才能读取，请启用后再试。</p>
+  </noscript>
+</body>
+</html>
