@@ -32,6 +32,7 @@
 | `screenshots/task3-loading.png` | 加载中 | 1440 × 1000 | 535KB |
 | `screenshots/task3-error.png` | 请求失败与重试按钮 | 1440 × 1000 | 547KB |
 | `screenshots/task3-online-create.png` | 线上页面（GitHub Pages）写入线上接口（PythonAnywhere） | 1440 × 1000 | 522KB |
+| `screenshots/task3-live.png` | 线上页面读取线上接口数据，F5 后仍在 | 1440 × 1000 | 518KB |
 | `screenshots/desktop.png` | 电脑端首页 | 1440 × 900 | 185KB |
 | `screenshots/desktop-full.png` | 电脑端首页整页 | 1440 × 1289 | 206KB |
 | `screenshots/detail.jpg` | 详情页 | 1440 × 900 | 91KB |
@@ -145,6 +146,8 @@ curl.exe -i -X OPTIONS http://127.0.0.1:5000/api/items -H "Origin: http://localh
 4. Reload，访问 `https://USERNAME.pythonanywhere.com/api/items` 确认返回 `{"code":0,...}`。
 
 前端只需把 `js/config.js` 的默认 `baseUrl` 指向后端地址，提交并推送，GitHub Pages 会自动更新。页面是 https，接口也必须是 https，否则浏览器会按混合内容拦截，表现就是「本地好好的、线上白屏」。
+
+线上验收：打开 https://a-sun-moon-stars.github.io/wangye/ ，列表里能看到 PythonAnywhere 数据库里的任务；新建或删除后列表会重新拉取，按 F5 数据仍在。
 
 ## 抓包记录
 
