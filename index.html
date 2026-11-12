@@ -10,8 +10,11 @@
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/refresh.css">
+  <link rel="stylesheet" href="css/api-state.css">
   <script src="js/tasks-data.js" defer></script>
   <script src="js/utils.js" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/api.js" defer></script>
   <script src="js/store.js" defer></script>
   <script src="js/editor.js" defer></script>
   <script src="js/app.js" defer></script>
@@ -48,7 +51,7 @@
         <div class="hero-actions">
           <a class="btn btn-primary" href="#tasks">开始今天 <span aria-hidden="true">↓</span></a>
           <button class="btn btn-ghost" type="button" data-reset>重置进度</button>
-          <p class="hero-stat"><b data-total-count>6</b> 件 · 预计 <b data-total-time>4 小时 35 分</b></p>
+          <p class="hero-stat"><b data-total-count>0</b> 件 · 预计 <b data-total-time>0 分</b></p>
         </div>
       </div>
 
@@ -64,11 +67,11 @@
             <span>已完成</span>
           </div>
         </div>
-        <p class="progress-text" data-progress-text>从最小的一件开始。</p>
+        <p class="progress-text" data-progress-text>清单还是空的，先加一件小事吧。</p>
         <div class="progress-meta">
           <span><b data-done-count>0</b> 件完成</span>
-          <span>共 <b data-total-count>6</b> 件</span>
-          <span data-total-time>4 小时 35 分</span>
+          <span>共 <b data-total-count>0</b> 件</span>
+          <span data-total-time>0 分</span>
         </div>
         <span class="scene-note">SCENE · SHOREKEEPER / 03.6s</span>
       </aside>
@@ -84,17 +87,22 @@
           <div class="section-tools">
             <div class="tabs" role="tablist" aria-label="筛选任务">
               <button class="tab is-active" id="tab-all" role="tab" aria-selected="true" aria-controls="panel-all" tabindex="0" data-filter="all">
-                全部 <span class="tab-count" data-count="all">6</span>
+                全部 <span class="tab-count" data-count="all">0</span>
               </button>
               <button class="tab" id="tab-active" role="tab" aria-selected="false" aria-controls="panel-active" tabindex="-1" data-filter="active">
-                进行中 <span class="tab-count" data-count="active">5</span>
+                进行中 <span class="tab-count" data-count="active">0</span>
               </button>
               <button class="tab" id="tab-done" role="tab" aria-selected="false" aria-controls="panel-done" tabindex="-1" data-filter="done">
-                已完成 <span class="tab-count" data-count="done">1</span>
+                已完成 <span class="tab-count" data-count="done">0</span>
               </button>
             </div>
             <button class="btn btn-primary btn-small" type="button" data-new-task>+ 新建任务</button>
           </div>
+        </div>
+
+        <div class="api-state" data-api-state data-api-kind="idle" hidden>
+          <p class="api-state-text" data-api-text role="status" aria-live="polite"></p>
+          <button class="btn btn-primary btn-small" type="button" data-retry>重试</button>
         </div>
 
         <div class="tab-panel" id="panel-all" role="tabpanel" aria-labelledby="tab-all" tabindex="0" data-panel="all">
@@ -103,7 +111,7 @@
           <div class="empty-state" data-empty="all" hidden>
             <span class="empty-icon" aria-hidden="true">✓</span>
             <h3>今天还没有任务</h3>
-            <p>等一下，清单正在加载。</p>
+            <p>点「新建任务」，从第一件小事开始。</p>
           </div>
         </div>
 
@@ -113,7 +121,7 @@
           <div class="empty-state" data-empty="active" hidden>
             <span class="empty-icon" aria-hidden="true">✓</span>
             <h3>这一栏清空了</h3>
-            <p>待办都完成了，去喝口水，或者看看「已完成」。</p>
+            <p>没有进行中的任务，点「新建任务」加一件。</p>
           </div>
         </div>
 
@@ -123,7 +131,7 @@
           <div class="empty-state" data-empty="done" hidden>
             <span class="empty-icon" aria-hidden="true">○</span>
             <h3>还没有打勾的任务</h3>
-            <p>从最小的一件开始，完成第一件就会出现在这里。</p>
+            <p>完成第一件任务后，它会出现在这里。</p>
           </div>
         </div>
       </section>
@@ -137,8 +145,8 @@
           <h2 id="rhythm-title">今天的节奏</h2>
           <div class="next-list" data-next-list></div>
           <div class="panel-foot">
-            <span>完成 <b data-side-done>1 / 6</b></span>
-            <span data-percent>17%</span>
+            <span>完成 <b data-side-done>0 / 0</b></span>
+            <span data-percent>0%</span>
           </div>
           <div class="mini-bar" aria-hidden="true"><span data-rhythm-bar></span></div>
         </section>

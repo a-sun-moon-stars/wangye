@@ -252,40 +252,35 @@
     }, 0);
   }
 
-  function saveTask(task, wasEditing) {
-    var index = state.tasks.findIndex(function (item) {
-      return item.id === task.id;
-    });
-
-    if (wasEditing && index !== -1) {
-      state.tasks[index] = task;
-    } else {
-      state.tasks.unshift(task);
-      activateTab("all", false);
+  async function saveTask(task, wasEditing) {
+    try {
+      var saved = wasEditing ? await Store.updateTask(task) : await Store.createTask(task);
+      await reload({ showLoading: false });
+      if (!wasEditing) {
+        activateTab("all", false);
+      }
+      toast(wasEditing ? "任务已更新。" : "新任务已加入。");
+      focusTaskAction(saved.id);
+    } catch (error) {
+      toast("保存失败：" + (error && error.message ? error.message : "未知错误"));
     }
-
-    Store.saveTasks(state.tasks);
-    render();
-    toast(wasEditing ? "任务已更新。" : "新任务已加入。");
-    focusTaskAction(task.id);
   }
 
-  function removeTask(task) {
-    state.tasks = state.tasks.filter(function (item) {
-      return item.id !== task.id;
-    });
-    state.done.delete(task.id);
-    Store.saveDone(state.done);
-    Store.saveTasks(state.tasks);
-    render();
-    toast("任务已删除，已从进度里移除。");
+  async function removeTask(task) {
+    try {
+      await Store.deleteTask(task.id);
+      await reload({ showLoading: false });
+      toast("任务已删除，已从进度里移除。");
 
-    window.setTimeout(function () {
-      var target = $("[data-new-task]") || $('[role="tab"]');
-      if (target) {
-        target.focus({ preventScroll: true });
-      }
-    }, 0);
+      window.setTimeout(function () {
+        var target = $("[data-new-task]") || $('[role="tab"]');
+        if (target) {
+          target.focus({ preventScroll: true });
+        }
+      }, 0);
+    } catch (error) {
+      toast("删除失败：" + (error && error.message ? error.message : "未知错误"));
+    }
   }
 
   function activateTab(filter, shouldFocus) {
@@ -352,7 +347,7 @@
   }
 
   function bindActions() {
-    document.addEventListener("change", function (event) {
+    document.addEventListener("change", async function (event) {
       var input = event.target.closest ? event.target.closest("[data-check-id]") : null;
       if (!input) {
         return;
@@ -360,17 +355,28 @@
 
       var taskId = input.getAttribute("data-check-id");
       var wasDone = state.done.has(taskId);
+      var nextDone = !wasDone;
 
-      if (wasDone) {
-        state.done.delete(taskId);
-      } else {
+      if (nextDone) {
         state.done.add(taskId);
+      } else {
+        state.done.delete(taskId);
       }
-
-      Store.saveDone(state.done);
       render();
-      toast(wasDone ? "已经放回待办。" : "完成一件，做得不错。");
       focusAfterToggle(taskId);
+
+      try {
+        await Store.setDone(taskId, nextDone);
+        toast(nextDone ? "完成一件，做得不错。" : "已经放回待办。");
+      } catch (error) {
+        if (nextDone) {
+          state.done.delete(taskId);
+        } else {
+          state.done.add(taskId);
+        }
+        render();
+        toast("状态没保存成功：" + (error && error.message ? error.message : "未知错误"));
+      }
     });
 
     document.addEventListener("click", function (event) {
@@ -408,27 +414,23 @@
     }
 
     $all("[data-reset]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        state.done = Store.resetDone();
-        render();
-        toast("进度已清零，重新开始。");
+      button.addEventListener("click", async function () {
+        try {
+          await Store.resetDone();
+          await reload({ showLoading: false });
+          toast("进度已清零，重新开始。");
+        } catch (error) {
+          toast("重置失败：" + (error && error.message ? error.message : "未知错误"));
+        }
       });
     });
 
-    window.addEventListener("storage", function (event) {
-      if (event.key === Store.STORAGE_KEY) {
-        state.done = Store.getDone();
-        render();
-      }
-      if (event.key === Store.TASKS_KEY) {
-        Store.loadTasks().then(function (tasks) {
-          state.tasks = tasks;
-          render();
-        }).catch(function () {
-          /* 读取失败时保留当前清单。 */
-        });
-      }
-    });
+    var retryButton = $("[data-retry]");
+    if (retryButton) {
+      retryButton.addEventListener("click", function () {
+        reload();
+      });
+    }
   }
 
   function writeToday() {
@@ -446,19 +448,61 @@
     setText("[data-year]", String(now.getFullYear()));
   }
 
+  function setApiState(kind, message) {
+    var box = $("[data-api-state]");
+    if (!box) {
+      return;
+    }
+    box.hidden = kind !== "loading" && kind !== "error";
+    box.classList.toggle("is-error", kind === "error");
+    box.setAttribute("data-api-kind", kind || "idle");
+    var text = $("[data-api-text]", box);
+    if (text) {
+      text.textContent = message || "";
+    }
+  }
+
+  function clearTaskViews() {
+    $all("[data-list]").forEach(function (list) {
+      list.innerHTML = "";
+      list.hidden = true;
+    });
+    $all("[data-empty]").forEach(function (empty) {
+      empty.hidden = true;
+    });
+    $all("[data-summary]").forEach(function (summary) {
+      summary.textContent = "";
+    });
+    $all("[data-count]").forEach(function (count) {
+      count.textContent = "0";
+    });
+  }
+
+  async function reload(options) {
+    var showLoading = !options || options.showLoading !== false;
+    if (showLoading) {
+      setApiState("loading", "正在从接口加载清单…");
+    }
+    try {
+      state.tasks = await Store.loadTasks();
+      state.done = Store.getDone();
+      setApiState("idle", "");
+      render();
+      return true;
+    } catch (error) {
+      state.tasks = [];
+      state.done = new Set();
+      clearTaskViews();
+      setApiState("error", error && error.message ? error.message : "清单加载失败，请稍后重试。");
+      return false;
+    }
+  }
+
   async function init() {
-    state.done = Store.getDone();
     writeToday();
     bindTabs();
     bindActions();
-
-    try {
-      state.tasks = await Store.loadTasks();
-    } catch (error) {
-      state.tasks = [];
-    }
-
-    render();
+    await reload();
     activateTab("all", false);
   }
 
