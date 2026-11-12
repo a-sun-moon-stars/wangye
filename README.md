@@ -33,7 +33,7 @@ python -m http.server 8000
 访问 `http://localhost:8000`。
 直接双击 `index.html` 也能看到页面，但 `fetch` 会被浏览器的同源策略拦截，任务数据会走本地兜底。
 ## 数据
-任务内容存放在 `data/tasks.json`，初始有 6 条。完成状态保存在：
+任务内容存放在 `data/tasks.json`，初始有0条。完成状态保存在：
 ```text
 morrow.todo.done.v1
 ```
@@ -91,5 +91,4 @@ wangye/
 ├── favicon.ico
 └── README.md
 ```
-## 素材
-进度卡背景来自本地 Wallpaper Engine 场景《鸣潮 守岸人》视频第 3.6 秒的一帧，压缩为 1600 × 900 的静态 JPG，仅用于个人作业演示。素材版权归原作者。
+
