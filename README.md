@@ -11,7 +11,7 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 仓库链接 | `https://github.com/a-sun-moon-stars/wangye`（已创建，当前为空仓库；Pages 未启用） |
+| 仓库链接 | `https://github.com/a-sun-moon-stars/wangye`|
 | 线上 URL | `https://a-sun-moon-stars.github.io/wangye/`（尚未启用；上传并开启 Pages 后生效） |
 | 电脑端截图 | [`screenshots/desktop.png`](screenshots/desktop.png)（1440×900，185KB） |
 | 电脑端整页 | [`screenshots/desktop-full.png`](screenshots/desktop-full.png)（1440×1289，206KB） |
