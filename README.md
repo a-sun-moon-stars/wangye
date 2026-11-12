@@ -33,7 +33,7 @@ python -m http.server 8000
 访问 `http://localhost:8000`。
 直接双击 `index.html` 也能看到页面，但 `fetch` 会被浏览器的同源策略拦截，任务数据会走本地兜底。
 ## 数据
-任务内容存放在 `data/tasks.json`，初始有0条。完成状态保存在：
+任务内容存放在 `data/tasks.json`，初始有6条。完成状态保存在：
 ```text
 morrow.todo.done.v1
 ```
