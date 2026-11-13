@@ -11,6 +11,7 @@
 | --- | --- |
 | `index.html` | 今日进度、Tab 筛选、任务列表、新建/编辑/删除 |
 | `detail.html` | 单条任务的步骤、备注、完成状态 |
+| `chat.html` | 任务助手：流式对话、3 轮上下文、停止生成 |
 
 ## 功能
 
@@ -19,6 +20,18 @@
 - 加载中、空数据、请求失败三种状态都有界面；失败时显示原因和「重试」按钮。
 - 新建、删除、勾选完成后自动重新拉取列表，按 F5 数据仍在。
 - 接口地址集中在 `js/config.js`，业务代码里不写死地址。
+- 对话页把消息发给后端 `/api/chat`，后端转发大模型并流式回传；Key 不在前端。
+
+## 对话页
+
+线上：https://a-sun-moon-stars.github.io/wangye/chat.html
+
+本地：先按上面的步骤起后端和静态服务，打开 `http://localhost:8000/chat.html?api=http://127.0.0.1:5000`。
+
+- 输入框 Enter 发送、Shift + Enter 换行；回答逐字出现，生成中「停止生成」可中断。
+- 前端只保留最近 3 轮上下文；后端再加一道 6000 字符上限，超了从最早的消息丢。
+- 失败时气泡和顶部提示都显示中文原因（Key 无效、限流、余额不足、超时、连不上），页面不白屏。
+- 系统提示词在服务端，角色限定为整理待办，回答不超过 200 字。
 
 ## 本地运行
 
@@ -81,3 +94,17 @@ Access to fetch at 'http://127.0.0.1:5002/api/items' from origin 'http://127.0.0
 后端在 PythonAnywhere（https://sunmoonstars.pythonanywhere.com），前端在 GitHub Pages。两边都是 https，否则会被浏览器按混合内容拦截，表现就是「本地好好的、线上白屏」。
 
 线上验收：打开 https://a-sun-moon-stars.github.io/wangye/ 能看到库里的任务，新建或删除后列表重新拉取，F5 数据仍在。
+
+## 产出物
+
+| 要求 | 位置 |
+| --- | --- |
+| 线上可操作页面 | https://a-sun-moon-stars.github.io/wangye/ |
+| 三态截图 | `screenshots/task3-loading.png`、`task3-empty.png`、`task3-error.png`、`task3-success.png` |
+| 接口文档表 | 后端仓库 README 的「接口列表」 |
+| 参数校验与错误码 | 后端仓库 README 的「参数校验」「错误返回」 |
+| CORS 问题记录 | 本文「CORS 记录」 |
+| 对话页 | https://a-sun-moon-stars.github.io/wangye/chat.html |
+| 流式输出与停止生成 | `screenshots/task4-stream.png`、`task4-stop.png` |
+| 出错提示 | `screenshots/task4-error.png` |
+| Key 不进仓库 | 后端仓库 `.env.example`、`.gitignore`（`.env` 已忽略） |

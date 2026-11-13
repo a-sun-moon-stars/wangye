@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>任务助手 · 今日待办</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <header class="chat-header">
+    <a class="chat-back" href="index.html">← 今日待办</a>
+    <h1>任务助手</h1>
+    <span class="chat-model">DeepSeek</span>
+  </header>
+
+  <main class="chat-main">
+    <div class="chat-log" id="chat-log" aria-live="polite">
+      <div class="chat-empty" id="chat-empty">
+        <p>问点具体的，比如：</p>
+        <ul>
+          <li>今天三件事，先做哪件？</li>
+          <li>帮我把「写周报」拆成 4 步。</li>
+          <li>这个任务 30 分钟够吗？</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chat-error" id="chat-error" hidden role="alert">
+      <span id="chat-error-text"></span>
+      <button type="button" id="chat-error-close" aria-label="关闭提示">×</button>
+    </div>
+
+    <form class="chat-composer" id="chat-form">
+      <textarea id="chat-input" rows="2" maxlength="1000"
+        placeholder="说点什么…（Enter 发送，Shift + Enter 换行）"></textarea>
+      <div class="chat-actions">
+        <span class="chat-hint" id="chat-hint">上下文保留最近 3 轮</span>
+        <button type="button" class="chat-btn" id="chat-stop" disabled>停止生成</button>
+        <button type="submit" class="chat-btn chat-btn-primary" id="chat-send">发送</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="js/config.js" defer></script>
+  <script src="js/chat.js" defer></script>
+</body>
+</html>
