@@ -33,6 +33,8 @@
 - 失败时气泡和顶部提示都显示中文原因（Key 无效、限流、余额不足、超时、连不上），页面不白屏。
 - 系统提示词在服务端，角色限定为整理待办，回答不超过 200 字。
 
+线上验收：连发「我叫小明，记住这个名字」→「我叫什么？」，回答「小明」，底部显示「上下文保留最近 3 轮（当前 2 轮）」，没有报错横幅（截图 `screenshots/task4-online.png`）。
+
 ## 本地运行
 
 先启动接口（另开一个终端）：
@@ -105,6 +107,7 @@ Access to fetch at 'http://127.0.0.1:5002/api/items' from origin 'http://127.0.0
 | 参数校验与错误码 | 后端仓库 README 的「参数校验」「错误返回」 |
 | CORS 问题记录 | 本文「CORS 记录」 |
 | 对话页 | https://a-sun-moon-stars.github.io/wangye/chat.html |
-| 流式输出与停止生成 | `screenshots/task4-stream.png`、`task4-stop.png` |
+| 对话页线上验收 | `screenshots/task4-online.png` |
+| 流式输出与停止生成 | `screenshots/task4-stream.gif`（录屏）、`task4-stream.png`、`task4-stop.png` |
 | 出错提示 | `screenshots/task4-error.png` |
-| Key 不进仓库 | 后端仓库 `.env.example`、`.gitignore`（`.env` 已忽略） |
+| Key 不进仓库 | `screenshots/task4-key-safe.png`；后端仓库 `.env.example`、`.gitignore`（`.env` 已忽略） |
