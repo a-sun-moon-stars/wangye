@@ -14,6 +14,10 @@
   var hint = document.getElementById("chat-hint");
   var errorBox = document.getElementById("chat-error");
   var errorText = document.getElementById("chat-error-text");
+  var toolPanel = document.getElementById("chat-tools-panel");
+  var toolLog = document.getElementById("chat-tool-log");
+  var toolCount = document.getElementById("chat-tool-count");
+  var toolTotal = 0;
 
   var history = [];
   var controller = null;
@@ -39,6 +43,38 @@
   function hideError() {
     errorBox.hidden = true;
     errorText.textContent = "";
+  }
+
+  function renderToolEvent(event) {
+    if (toolTotal === 0) {
+      toolLog.textContent = "";
+    }
+    toolTotal += 1;
+    toolCount.textContent = String(toolTotal);
+    toolPanel.open = true;
+
+    var time = new Date().toLocaleTimeString("zh-CN", { hour12: false });
+    var line = document.createElement("div");
+    line.className = "tool-line";
+    line.textContent =
+      "[" + time + "] " + event.name + " " + JSON.stringify(event.arguments) + " · " + event.ms + "ms";
+
+    var result = document.createElement("div");
+    var data = event.result || {};
+    var ok = data.ok;
+    result.className = "tool-result" + (ok ? "" : " is-error");
+    if (ok) {
+      var parts = [];
+      if (data.id) parts.push("id=" + data.id);
+      if (typeof data.count === "number") parts.push("count=" + data.count);
+      result.textContent = "→ 成功" + (parts.length ? " " + parts.join(" ") : "");
+    } else {
+      result.textContent = "→ 失败：" + (data.error || "未知错误");
+    }
+
+    toolLog.appendChild(line);
+    toolLog.appendChild(result);
+    toolLog.scrollTop = toolLog.scrollHeight;
   }
 
   function scrollToBottom() {
@@ -93,6 +129,8 @@
     }
     if (event === "error") {
       if (handlers.onerror) handlers.onerror(parsed.msg || "生成失败");
+    } else if (event === "tool") {
+      if (handlers.ontool) handlers.ontool(parsed);
     } else if (parsed.delta) {
       handlers.delta(parsed.delta);
     }
@@ -158,6 +196,7 @@
             onerror: function (msg) {
               failure = msg;
             },
+            ontool: renderToolEvent,
           });
           if (failure) {
             await reader.cancel();
