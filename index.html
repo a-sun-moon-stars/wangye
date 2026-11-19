@@ -86,6 +86,10 @@
             <h2 id="tasks-title">今天要做的事</h2>
           </div>
           <div class="section-tools">
+            <label class="task-search">
+              <span class="sr-only">搜索任务</span>
+              <input id="task-search" type="search" placeholder="搜索标题、描述、标签…" autocomplete="off">
+            </label>
             <div class="tabs" role="tablist" aria-label="筛选任务">
               <button class="tab is-active" id="tab-all" role="tab" aria-selected="true" aria-controls="panel-all" tabindex="0" data-filter="all">
                 全部 <span class="tab-count" data-count="all">0</span>
@@ -195,17 +199,18 @@
         <div>
           <p class="eyebrow">TASK EDITOR</p>
           <h2 id="task-dialog-title">编辑任务</h2>
+          <p class="dialog-hint">所有字段都可以留空；标题空着会存成「未命名任务」。</p>
         </div>
         <button class="dialog-close" type="button" data-close-dialog aria-label="关闭编辑窗口">&times;</button>
       </div>
 
       <div class="form-grid">
         <label class="field field-wide" for="task-title">标题
-          <input id="task-title" name="title" type="text" maxlength="60" required autocomplete="off" placeholder="例如：把首页的文案再顺一遍">
+          <input id="task-title" name="title" type="text" maxlength="50" autocomplete="off" placeholder="不填就叫「未命名任务」">
         </label>
 
         <label class="field field-wide" for="task-summary">一句话描述
-          <textarea id="task-summary" name="summary" rows="2" maxlength="120" required placeholder="做完这件事，具体是什么样子？"></textarea>
+          <textarea id="task-summary" name="summary" rows="2" maxlength="120" placeholder="做完这件事，具体是什么样子？（可不填）"></textarea>
         </label>
 
         <label class="field" for="task-tag">标签
@@ -226,19 +231,19 @@
         </label>
 
         <label class="field" for="task-date">截止日期
-          <input id="task-date" name="date" type="date" required>
+          <input id="task-date" name="date" type="date">
         </label>
 
         <label class="field" for="task-time">截止时间
-          <input id="task-time" name="time" type="time" required>
+          <input id="task-time" name="time" type="time">
         </label>
 
         <label class="field" for="task-estimate">预计用时（分钟）
-          <input id="task-estimate" name="estimate" type="number" min="5" max="600" step="5" value="30" required>
+          <input id="task-estimate" name="estimate" type="number" min="5" max="600" step="5" value="30" placeholder="可留空">
         </label>
 
         <label class="field field-wide" for="task-steps">完成步骤（一行一个）
-          <textarea id="task-steps" name="steps" rows="4" required placeholder="第一步行做什么&#10;第二步做什么&#10;最后怎么算完成"></textarea>
+          <textarea id="task-steps" name="steps" rows="4" placeholder="第一步行做什么&#10;第二步做什么&#10;最后怎么算完成（可不填）"></textarea>
         </label>
 
         <label class="field field-wide" for="task-note">给自己的备注

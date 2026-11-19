@@ -4,8 +4,15 @@
 
 - 线上：https://a-sun-moon-stars.github.io/wangye/
 - 助手：https://a-sun-moon-stars.github.io/wangye/chat.html
+- 演示：https://a-sun-moon-stars.github.io/wangye/screenshots/task6-demo.mp4 （84 秒，无声）
 - 后端仓库：https://github.com/a-sun-moon-stars/runoob-flask-test
 - 线上接口：https://sunmoonstars.pythonanywhere.com/api/items
+
+## 使用要点
+
+- 新建和编辑时所有字段都可以留空，标题空着会自动存成「未命名任务」。
+- 增删改都直接写库，刷新页面或换台设备再打开，清单还是最后的样子。
+- 顶部搜索框实时过滤当前清单：标题、描述、标签、备注、步骤里的词都能搜到；按 Esc 清空。
 
 ## 技术栈
 
@@ -98,7 +105,7 @@ curl.exe -N -X POST http://127.0.0.1:5000/api/chat -H "Content-Type: application
 
 ![工具调用](screenshots/task5-online.png)
 
-接口验收：GET / POST / DELETE 分别返回 200 / 201 / 200（`screenshots/task2-api.png`），故意少传 `title` 返回 400 和「缺少字段 title」，不是 500（`screenshots/task2-400.png`）：
+接口验收：GET / POST / DELETE 分别返回 200 / 201 / 200（`screenshots/task2-api.png`），参数类型不对（`title` 传数字）返回 400 和中文原因，不是 500（`screenshots/task2-400.png`）：
 
 ![接口验收](screenshots/task2-api.png)
 ![参数校验](screenshots/task2-400.png)

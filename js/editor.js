@@ -83,31 +83,19 @@
   }
 
   function readForm() {
-    var title = trim(fields.title.value);
+    var title = trim(fields.title.value) || "未命名任务";
     var summary = trim(fields.summary.value);
     var steps = fields.steps.value.split(/\r?\n/).map(function (line) {
       return trim(line).replace(/^[-*•]\s*/, "");
     }).filter(Boolean);
-    var estimate = Number(fields.estimate.value);
+    var estimate = fields.estimate.value === "" ? 0 : Number(fields.estimate.value);
 
-    if (!title || !summary || !steps.length) {
-      setError("标题、一句话描述和至少一个步骤不能为空。");
+    if (title.length > 50) {
+      setError("标题最多 50 个字，短一点更好记。");
       return null;
     }
-    if (title.length > 60) {
-      setError("标题最多 60 个字，短一点更好记。");
-      return null;
-    }
-    if (!fields.date.value) {
-      setError("请选一个截止日期。");
-      return null;
-    }
-    if (!fields.time.value) {
-      setError("请选一个截止时间。");
-      return null;
-    }
-    if (!Number.isFinite(estimate) || estimate < 5 || estimate > 600) {
-      setError("预计用时请填 5 到 600 分钟。");
+    if (estimate && (!Number.isFinite(estimate) || estimate < 5 || estimate > 600)) {
+      setError("预计用时请填 5 到 600 分钟，不想填就留空。");
       return null;
     }
 
@@ -117,11 +105,11 @@
       summary: summary,
       tag: fields.tag.value,
       priority: fields.priority.value,
-      dueDate: fields.date.value,
+      dueDate: fields.date.value || todayValue(),
       dueTime: fields.time.value,
-      estimateMinutes: Math.round(estimate),
+      estimateMinutes: estimate ? Math.round(estimate) : 0,
       steps: steps,
-      note: trim(fields.note.value) || "先做完，再做好看。"
+      note: trim(fields.note.value)
     });
 
     delete task.dueInDays;

@@ -2555,3 +2555,53 @@ body {
       #161b22;
   }
 }
+
+/* 搜索框：和 Tab、新建按钮同一行 */
+.section-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.task-search {
+  flex: 1 1 180px;
+  max-width: 300px;
+  min-width: 160px;
+}
+
+.task-search input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(13, 17, 23, 0.55);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-search input::placeholder {
+  color: var(--muted);
+}
+
+.task-search input:focus {
+  outline: none;
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.18);
+}
+
+.task-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.dialog-hint {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}

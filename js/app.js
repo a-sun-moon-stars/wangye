@@ -12,8 +12,24 @@
   var state = {
     tasks: [],
     done: new Set(),
-    filter: "all"
+    filter: "all",
+    query: ""
   };
+
+  function matchQuery(task) {
+    var q = state.query;
+    if (!q) {
+      return true;
+    }
+    var haystack = [
+      task.title,
+      task.summary,
+      task.tag,
+      task.note,
+      (task.steps || []).join(" ")
+    ].join(" ").toLowerCase();
+    return haystack.indexOf(q) !== -1;
+  }
 
   var FILTERS = {
     all: function () { return true; },
@@ -41,6 +57,26 @@
     return tasks.reduce(function (sum, task) {
       return sum + (Number(task.estimateMinutes) || 0);
     }, 0);
+  }
+
+  function cacheEmptyStates() {
+    $all("[data-empty]").forEach(function (box) {
+      var title = box.querySelector("h3");
+      var desc = box.querySelector("p");
+      box.dataset.baseTitle = title ? title.textContent : "";
+      box.dataset.baseDesc = desc ? desc.textContent : "";
+    });
+  }
+
+  function updateEmptyText(box) {
+    var title = box.querySelector("h3");
+    var desc = box.querySelector("p");
+    if (title) {
+      title.textContent = state.query ? "没有找到匹配的任务" : (box.dataset.baseTitle || "");
+    }
+    if (desc) {
+      desc.textContent = state.query ? "换个关键词试试，或者清空搜索框。" : (box.dataset.baseDesc || "");
+    }
   }
 
   function taskMarkup(task) {
@@ -198,7 +234,7 @@
 
     // 三个 Tab 的计数与列表
     Object.keys(FILTERS).forEach(function (filter) {
-      var visibleTasks = state.tasks.filter(FILTERS[filter]);
+      var visibleTasks = state.tasks.filter(FILTERS[filter]).filter(matchQuery);
       var list = $('[data-list="' + filter + '"]');
       var empty = $('[data-empty="' + filter + '"]');
       var summary = $('[data-summary="' + filter + '"]');
@@ -208,7 +244,9 @@
         count.textContent = String(visibleTasks.length);
       }
       if (summary) {
-        summary.textContent = summaryText(filter, visibleTasks, total);
+        summary.textContent = state.query
+          ? "搜索「" + state.query + "」找到 " + visibleTasks.length + " 件"
+          : summaryText(filter, visibleTasks, total);
       }
       if (list) {
         list.innerHTML = visibleTasks.map(taskMarkup).join("");
@@ -216,6 +254,7 @@
       }
       if (empty) {
         empty.hidden = visibleTasks.length !== 0;
+        updateEmptyText(empty);
       }
     });
   }
@@ -498,9 +537,29 @@
     }
   }
 
+  function bindSearch() {
+    var input = document.getElementById("task-search");
+    if (!input) {
+      return;
+    }
+    input.addEventListener("input", function () {
+      state.query = input.value.trim().toLowerCase();
+      render();
+    });
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && input.value) {
+        input.value = "";
+        state.query = "";
+        render();
+      }
+    });
+  }
+
   async function init() {
+    cacheEmptyStates();
     writeToday();
     bindTabs();
+    bindSearch();
     bindActions();
     await reload();
     activateTab("all", false);
